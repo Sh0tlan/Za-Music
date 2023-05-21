@@ -1,8 +1,16 @@
+import { ThemeProvider } from "styled-components";
+import { theme } from "styles/Theme";
+import Home from "pages/Home";
+import { GlobalStyles } from "styles/Global";
+import Header from "components/Header";
+
 function App() {
   return (
-    <div>
-      <h1>Hello World</h1>
-    </div>
+    <ThemeProvider theme={theme}>
+      <GlobalStyles />
+      <Header />
+      <Home />
+    </ThemeProvider>
   );
 }
 

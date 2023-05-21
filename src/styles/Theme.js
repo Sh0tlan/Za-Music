@@ -2,10 +2,13 @@ export const theme = {
   colors: {
     white: "#FFFFFF",
     black: "#040D1B",
-    secondaryDark: "#0F1928",
+    lightGrey: "#DADADA;",
+    secondaryBlack: "#0F1928",
     secondaryGrey: "#878787",
+    darkGrey: "#333B48",
     primary: "#E2577F",
-    lightWhite: "#4E3FE4",
+    purple: "#4E3FE4",
+    lightWhite: "rgba(255, 255, 255, 0.2)",
   },
   fonts: {
     poppins: "Poppins",

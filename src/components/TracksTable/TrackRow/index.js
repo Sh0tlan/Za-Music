@@ -1,4 +1,3 @@
-import React from "react";
 import {
   IconWrapper,
   SongNumberText,
@@ -11,15 +10,15 @@ import {
   TrackSubText,
   TrackTitle,
 } from "./styled";
-import { Heart, Play } from "components/ui/Icons";
+import { Heart, Pause, Play } from "components/ui/Icons";
 import { SubText } from "components/ui/Typography";
 import { formatSecondsToMSS } from "utils/time";
 import PropTypes from "prop-types";
 import Skeleton from "react-loading-skeleton";
 
-function TrackRow({ track, index }) {
+function TrackRow({ track, index, onClick, isPlaying }) {
   return (
-    <StyledTrackRow key={track?.id}>
+    <StyledTrackRow key={track?.id} onClick={() => onClick(track)}>
       <TableData>
         <SongNumberText className="text">
           {track ? (
@@ -29,7 +28,7 @@ function TrackRow({ track, index }) {
           )}
         </SongNumberText>
         <IconWrapper className="icon">
-          <Play />
+          {isPlaying ? <Pause /> : <Play />}
         </IconWrapper>
       </TableData>
       <TrackInfo>
@@ -74,6 +73,7 @@ function TrackRow({ track, index }) {
 }
 
 TrackRow.propTypes = {
+  onClick: PropTypes.func,
   tracks: PropTypes.arrayOf(
     PropTypes.shape({
       id: PropTypes.number,
@@ -89,7 +89,8 @@ TrackRow.propTypes = {
       }),
     })
   ),
-  isLoading: PropTypes.bool,
+  index: PropTypes.number,
+  isPlaying: PropTypes.bool,
 };
 
 export default TrackRow;

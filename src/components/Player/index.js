@@ -10,94 +10,135 @@ import {
   ProgressWrapper,
   TrackTime,
   VolumeWrapper,
+  TrackTitle,
 } from "./styled";
 import { ContentWrapper } from "components/Layout";
-import { Text } from "components/ui/Typography";
 import IconButton from "components/ui/IconButton";
-import { Play, SkipLeft, SkipRight, Volume } from "components/ui/Icons";
+import { Pause, Play, SkipLeft, SkipRight, Volume } from "components/ui/Icons";
 import { theme } from "styles/Theme";
+import { useContext, useEffect, useRef, useState } from "react";
+import { formatSecondsToMSS } from "utils/time";
+import {
+  PlayerContext,
+  PlayerDispatchContext,
+} from "components/context/playerContext";
+import { actions } from "components/context/actions";
 
-const track = {
-  id: 109176426,
-  title: "Makeba",
-  title_short: "Makeba",
-  title_version: "",
-  link: "https://www.deezer.com/track/109176426",
-  duration: 249,
-  rank: 967020,
-  explicit_lyrics: false,
-  explicit_content_lyrics: 0,
-  explicit_content_cover: 0,
-  preview:
-    "https://cdns-preview-f.dzcdn.net/stream/c-f718fd17f614f0834214e6bb728833de-7.mp3",
-  md5_image: "cc09c2457ce3e1adc3a7a23f93440e59",
-  position: 1,
-  artist: {
-    id: 5951582,
-    name: "Jain",
-    link: "https://www.deezer.com/artist/5951582",
-    picture: "https://api.deezer.com/artist/5951582/image",
-    picture_small:
-      "https://e-cdns-images.dzcdn.net/images/artist/d76deb5715e5a9ea8054bfd56ec1e398/56x56-000000-80-0-0.jpg",
-    picture_medium:
-      "https://e-cdns-images.dzcdn.net/images/artist/d76deb5715e5a9ea8054bfd56ec1e398/250x250-000000-80-0-0.jpg",
-    picture_big:
-      "https://e-cdns-images.dzcdn.net/images/artist/d76deb5715e5a9ea8054bfd56ec1e398/500x500-000000-80-0-0.jpg",
-    picture_xl:
-      "https://e-cdns-images.dzcdn.net/images/artist/d76deb5715e5a9ea8054bfd56ec1e398/1000x1000-000000-80-0-0.jpg",
-    radio: true,
-    tracklist: "https://api.deezer.com/artist/5951582/top?limit=50",
-    type: "artist",
-  },
-  album: {
-    id: 11375984,
-    title: "Zanaka",
-    cover: "https://api.deezer.com/album/11375984/image",
-    cover_small:
-      "https://e-cdns-images.dzcdn.net/images/cover/cc09c2457ce3e1adc3a7a23f93440e59/56x56-000000-80-0-0.jpg",
-    cover_medium:
-      "https://e-cdns-images.dzcdn.net/images/cover/cc09c2457ce3e1adc3a7a23f93440e59/250x250-000000-80-0-0.jpg",
-    cover_big:
-      "https://e-cdns-images.dzcdn.net/images/cover/cc09c2457ce3e1adc3a7a23f93440e59/500x500-000000-80-0-0.jpg",
-    cover_xl:
-      "https://e-cdns-images.dzcdn.net/images/cover/cc09c2457ce3e1adc3a7a23f93440e59/1000x1000-000000-80-0-0.jpg",
-    md5_image: "cc09c2457ce3e1adc3a7a23f93440e59",
-    tracklist: "https://api.deezer.com/album/11375984/tracks",
-    type: "album",
-  },
-  type: "track",
-};
+function Player() {
+  const dispatch = useContext(PlayerDispatchContext);
+  const { track, isPlaying } = useContext(PlayerContext);
 
-function Player(props) {
+  const [playerState, setPlayerState] = useState({
+    currentTime: 0,
+    duration: 0,
+    volume: 0.1,
+  });
+
+  const audioRef = useRef();
+
+  const togglePlay = () =>
+    dispatch({
+      type: actions.TOGGLE_PLAY,
+    });
+
+  const toggleVolume = () => {
+    const newVolume = playerState.volume > 0 ? 0 : 1;
+
+    onVolumeChange(newVolume);
+  };
+
+  const onTimeUpdate = () => {
+    if (!audioRef?.current) return;
+    const currentTime = audioRef.current.currentTime;
+    const duration = audioRef.current.duration;
+
+    setPlayerState((prev) => ({ ...prev, currentTime, duration }));
+  };
+
+  const onTrackTimeDrag = (newTime) => {
+    if (!audioRef?.current) return;
+    audioRef.current.currentTime = newTime;
+
+    setPlayerState((prev) => ({ ...prev, currentTime: newTime }));
+  };
+  const onVolumeChange = (newVolume) => {
+    if (!audioRef?.current) return;
+    audioRef.current.volume = newVolume;
+
+    setPlayerState((prev) => ({ ...prev, volume: newVolume }));
+  };
+
+  const handleNextSong = () => {
+    dispatch({
+      type: actions.NEXT_SONG,
+    });
+  };
+  const handlePrevSong = () => {
+    dispatch({
+      type: actions.PREV_SONG,
+    });
+  };
+
+  useEffect(() => {
+    if (!audioRef?.current) return;
+    if (isPlaying) {
+      audioRef.current.play().catch((err) => console.log(err));
+    } else {
+      audioRef.current.pause();
+    }
+  });
+
+  if (!track) {
+    return null;
+  }
+
   return (
     <Wrapper>
-      <ContentWrapper display="flex">
+      <ContentWrapper display="flex" items="center">
+        <audio
+          ref={audioRef}
+          src={track.preview}
+          controls
+          hidden
+          onTimeUpdate={onTimeUpdate}
+          onLoadedMetadata={onTimeUpdate}
+          onEnded={handleNextSong}
+        />
+
         <TrackInfoWrapper>
           <TrackImage
             src={track?.album.cover}
             alt={`${track?.album.title}'s cover`}
           />
           <TrackInfoTextWrapper>
-            <Text>{track.title}</Text>
+            <TrackTitle>{track.title}</TrackTitle>
             <ArtistName>{track.title}</ArtistName>
           </TrackInfoTextWrapper>
         </TrackInfoWrapper>
-
         <ControleWrapper>
-          <IconButton>
+          <IconButton onClick={handlePrevSong}>
             <SkipLeft />
           </IconButton>
-          <IconButton width={55} height={55} withBackground>
-            <Play></Play>
+          <IconButton
+            onClick={togglePlay}
+            width={55}
+            height={55}
+            withBackground
+          >
+            {isPlaying ? <Pause /> : <Play />}
           </IconButton>
-          <IconButton>
+          <IconButton onClick={handleNextSong}>
             <SkipRight></SkipRight>
           </IconButton>
         </ControleWrapper>
-
         <ProgressWrapper>
-          <TrackTime>0:00</TrackTime>
+          <TrackTime>{formatSecondsToMSS(playerState.currentTime)}</TrackTime>
           <Slider
+            onChange={onTrackTimeDrag}
+            step={0.2}
+            min={0}
+            max={playerState.duration}
+            value={playerState.currentTime}
             style={{ padding: "3px 0" }}
             trackStyle={{ height: 8, background: theme.colors.white }}
             railStyle={{ height: 8, background: theme.colors.darkGrey }}
@@ -107,14 +148,18 @@ function Player(props) {
               marginTop: -3,
             }}
           />
-          <TrackTime grey>2:30</TrackTime>
+          <TrackTime gray>{formatSecondsToMSS(playerState.duration)}</TrackTime>
         </ProgressWrapper>
-
         <VolumeWrapper>
-          <IconButton height={24} width={24}>
+          <IconButton onClick={toggleVolume} height={24} width={24}>
             <Volume />
           </IconButton>
           <Slider
+            step={0.01}
+            min={0}
+            max={1}
+            value={playerState.volume}
+            onChange={onVolumeChange}
             style={{ padding: "3px 0" }}
             trackStyle={{ height: 8, background: theme.colors.white }}
             railStyle={{ height: 8, background: theme.colors.darkGrey }}

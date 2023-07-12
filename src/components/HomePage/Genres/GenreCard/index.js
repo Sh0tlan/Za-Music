@@ -3,7 +3,7 @@ import { GenreName, Wrapper } from "./styled";
 
 function GenreCard({ backgroundImage, name }) {
   return (
-    <Wrapper backgroundImage={backgroundImage}>
+    <Wrapper image={backgroundImage}>
       <GenreName>{name}</GenreName>
     </Wrapper>
   );

@@ -30,7 +30,7 @@ function Home() {
 
     loadData();
   }, []);
-  console.log(chart);
+
   return (
     <ContentWrapper>
       <Hero />

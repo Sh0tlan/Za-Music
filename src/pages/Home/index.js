@@ -1,26 +1,30 @@
 import { Hero, Genres, Artists } from "components/HomePage";
 import { GreyTitle, StyledAside, TrendsAndArtistsSection } from "./styled";
 
-// Import Swiper styles
-import "swiper/css";
-import "swiper/css/pagination";
 import { SectionTitle } from "components/ui/Typography";
 import { useEffect, useState } from "react";
 import { toast } from "react-toastify";
-import { loadCharts } from "services/api";
+import { loadCharts, loadTopRadioTracks } from "services/api";
 import TracksTable from "components/TracksTable";
-import { ContentWrapper } from "components/Layout";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/pagination";
 
 function Home() {
   const [chart, setChart] = useState();
+  const [radio, setRadio] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     const loadData = async () => {
       try {
         setIsLoading(true);
-        const data = await loadCharts();
-        setChart(data);
+        const chart = await loadCharts();
+        const radio = await loadTopRadioTracks();
+
+        setChart(chart);
+        setRadio(radio);
       } catch (err) {
         toast.error(err.message);
       } finally {
@@ -32,8 +36,8 @@ function Home() {
   }, []);
 
   return (
-    <ContentWrapper>
-      <Hero />
+    <main>
+      <Hero tracks={radio} />
       <Genres />
       <TrendsAndArtistsSection>
         <div>
@@ -47,7 +51,7 @@ function Home() {
           <Artists isLoading={isLoading} artists={chart?.artists?.data} />
         </StyledAside>
       </TrendsAndArtistsSection>
-    </ContentWrapper>
+    </main>
   );
 }
 

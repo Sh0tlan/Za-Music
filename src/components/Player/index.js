@@ -148,7 +148,7 @@ function Player() {
               marginTop: -3,
             }}
           />
-          <TrackTime gray>{formatSecondsToMSS(playerState.duration)}</TrackTime>
+          <TrackTime>{formatSecondsToMSS(playerState.duration)}</TrackTime>
         </ProgressWrapper>
         <VolumeWrapper>
           <IconButton onClick={toggleVolume} height={24} width={24}>

@@ -1,3 +1,4 @@
+import { PLAYER_HEIGHT } from "common/constants";
 import { SubText, Text } from "components/ui/Typography";
 import { styled } from "styled-components";
 
@@ -5,7 +6,7 @@ export const Wrapper = styled.div`
   display: flex;
   position: fixed;
   align-items: center;
-  height: 105px;
+  height: ${PLAYER_HEIGHT}px;
   width: 100%;
   bottom: 0;
   left: 0;

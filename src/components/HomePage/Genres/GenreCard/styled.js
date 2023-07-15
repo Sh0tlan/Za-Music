@@ -5,11 +5,13 @@ export const Wrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
+  text-align: center;
   width: 220px;
   height: 116px;
   border-radius: 25px;
   cursor: pointer;
   position: relative;
+
   &::before {
     position: absolute;
     left: 0;

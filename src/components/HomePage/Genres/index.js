@@ -16,6 +16,7 @@ import {
 import { ArrowLeft, ArrowRight } from "components/ui/Icons";
 import GenreCard from "./GenreCard";
 import { loadGenres } from "services/api";
+import { Link } from "react-router-dom";
 
 function Genres() {
   const [genres, setGenres] = useState();
@@ -81,10 +82,12 @@ function Genres() {
           {!isLoading &&
             genres?.map((genre) => (
               <SwiperSlide key={genre.id} style={{ width: "auto" }}>
-                <GenreCard
-                  name={genre.name}
-                  backgroundImage={genre.picture_medium}
-                />
+                <Link to={`/genre/${genre.id}`}>
+                  <GenreCard
+                    name={genre.name}
+                    backgroundImage={genre.picture_medium}
+                  />
+                </Link>
               </SwiperSlide>
             ))}
         </Swiper>

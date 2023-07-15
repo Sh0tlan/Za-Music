@@ -19,6 +19,7 @@ function Hero({ tracks }) {
       isPlaying: true,
     });
   };
+
   return (
     <Wrapper>
       <TextWrapper>

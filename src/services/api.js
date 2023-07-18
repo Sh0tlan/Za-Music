@@ -1,5 +1,6 @@
 import axios from "axios";
 
+const API_BASE_URL = "https://api.deezer.com";
 const API_CHART_URL = "/chart";
 const API_ALL_GENRES_URL = "/genre";
 const API_SEARCH_URL = "/search";
@@ -28,7 +29,7 @@ export async function loadCharts() {
   }
 }
 
-export async function loadGenres(searchQuery) {
+export async function loadGenres() {
   try {
     const data = await axios.get(API_ALL_GENRES_URL);
 
@@ -37,6 +38,29 @@ export async function loadGenres(searchQuery) {
     return data.data.data.filter((genre) => genre.name.toLowerCase() !== "все");
   } catch (err) {
     throw Error("Failed to load genres!");
+  }
+}
+export async function loadGenre(genreId) {
+  try {
+    const [genreData, radiosData] = await Promise.all([
+      axios.get(`${API_ALL_GENRES_URL}/${genreId}`),
+      axios.get(`${API_ALL_GENRES_URL}/${genreId}/radios`),
+    ]);
+
+    if (!genreData?.data || !radiosData?.data) throw Error();
+
+    const radios = radiosData.data.data;
+    const randomIndex = Math.floor(Math.random() * radios.length);
+    const tracksData = await axios(
+      radios[randomIndex].tracklist.replace(API_BASE_URL, "")
+    );
+
+    return {
+      genre: genreData.data,
+      tracks: tracksData.data.data,
+    };
+  } catch (err) {
+    throw Error("Failed to load genre!");
   }
 }
 

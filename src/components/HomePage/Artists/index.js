@@ -9,8 +9,12 @@ import {
   Wrapper,
 } from "./styled";
 import ArtistsCard from "./ArtistsCard";
+import { useWindowSize } from "hooks/useWindowSize";
+import { breakpoints } from "styles/BreakPoints";
 
 function Artists({ isLoading, artists }) {
+  const { width } = useWindowSize();
+  const isMobileLayout = width < breakpoints.md;
   return (
     <Wrapper>
       <ArtistsWrapper>
@@ -19,11 +23,11 @@ function Artists({ isLoading, artists }) {
             <ArtistLoaderWrapper key={num}>
               <Skeleton
                 wrapper={ArtistsSkeletonWrapper}
-                height={95}
-                width={95}
+                height={isMobileLayout ? 75 : 95}
+                width={isMobileLayout ? 75 : 95}
                 circle
               />
-              <Skeleton height={27} width={100} />
+              <Skeleton height={isMobileLayout ? 19 : 27} />
             </ArtistLoaderWrapper>
           ))}
 

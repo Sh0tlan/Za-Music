@@ -17,8 +17,11 @@ import { ArrowLeft, ArrowRight } from "components/ui/Icons";
 import GenreCard from "./GenreCard";
 import { loadGenres } from "services/api";
 import { Link } from "react-router-dom";
+import { breakpoints } from "styles/BreakPoints";
+import { useWindowSize } from "hooks/useWindowSize";
 
 function Genres() {
+  const { width } = useWindowSize();
   const [genres, setGenres] = useState();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -68,8 +71,8 @@ function Genres() {
             <Skeleton
               wrapper={GenreSkeletonWrapper}
               key={num}
-              width={220}
-              height={116}
+              height={width < breakpoints.md ? 95 : 116}
+              width={width < breakpoints.md ? 137 : 220}
               borderRadius={25}
             />
           ))}

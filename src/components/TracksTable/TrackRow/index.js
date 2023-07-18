@@ -16,6 +16,7 @@ import { formatSecondsToMSS } from "utils/time";
 import PropTypes from "prop-types";
 import Skeleton from "react-loading-skeleton";
 import { theme } from "styles/Theme";
+import { breakpoints } from "styles/BreakPoints";
 
 function TrackRow({
   track,
@@ -24,7 +25,9 @@ function TrackRow({
   isPlaying,
   handleSaveTrackClick,
   isSaved,
+  screenWidth,
 }) {
+  const isMobileLayout = screenWidth > breakpoints.md;
   return (
     <StyledTrackRow key={track?.id} onClick={() => onClick(track)}>
       <TableData>
@@ -46,29 +49,41 @@ function TrackRow({
             alt={`${track?.album.title}'s cover`}
           />
         ) : (
-          <Skeleton width={65} height={65} borderRadius={15} />
+          <Skeleton
+            width={isMobileLayout ? 65 : 45}
+            height={isMobileLayout ? 65 : 45}
+            borderRadius={isMobileLayout ? 15 : 10}
+          />
         )}
         <TrackInfoTextWrapper>
-          <TrackTitle>{track?.title || <Skeleton width={320} />}</TrackTitle>
+          <TrackTitle>
+            {track?.title || <Skeleton width={isMobileLayout ? 320 : 110} />}
+          </TrackTitle>
           <TrackSubText>
-            {track?.artist.name || <Skeleton width={250} />}
+            {track?.artist.name || (
+              <Skeleton width={isMobileLayout ? 250 : 80} />
+            )}
           </TrackSubText>
         </TrackInfoTextWrapper>
       </TrackInfo>
-      <TableData>
-        <SubText>
-          {track?.duration ? (
-            formatSecondsToMSS(track?.duration)
-          ) : (
-            <Skeleton width={48} />
-          )}
-        </SubText>
-      </TableData>
-      <TableData>
-        <TrackSubText>
-          {track?.album.title || <Skeleton width={350} />}
-        </TrackSubText>
-      </TableData>
+      {screenWidth > breakpoints.md && (
+        <TableData>
+          <SubText>
+            {track?.duration ? (
+              formatSecondsToMSS(track?.duration)
+            ) : (
+              <Skeleton width={48} />
+            )}
+          </SubText>
+        </TableData>
+      )}
+      {screenWidth > breakpoints.md && (
+        <TableData>
+          <TrackSubText>
+            {track?.album.title || <Skeleton width={350} />}
+          </TrackSubText>
+        </TableData>
+      )}
       <TableData>
         {track ? (
           <StyledIconButton
@@ -112,6 +127,7 @@ TrackRow.propTypes = {
   isPlaying: PropTypes.bool,
   handleSaveTrackClick: PropTypes.func,
   isSaved: PropTypes.bool,
+  screenWidth: PropTypes.number,
 };
 
 export default TrackRow;

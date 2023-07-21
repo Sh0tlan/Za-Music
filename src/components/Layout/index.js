@@ -9,9 +9,12 @@ export const ContentWrapper = styled.div`
   padding: 0 120px;
   width: 100%;
   margin: 0 auto;
+
   display: ${(props) => props.display || "block"};
   align-items: ${(props) => props.items || "flex-start"};
   justify-content: ${(props) => props.content || "start"};
+  flex-direction: ${(props) => props.direction || "row"};
+  gap: ${(props) => props.gap || "0"}px;
 
   ${device.xl} {
     padding: 0 62px;

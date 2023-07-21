@@ -5,7 +5,9 @@ export const StyledButton = styled.button`
   align-items: center;
   justify-content: center;
   width: ${(props) => props.width || 20}px;
+  min-width: ${(props) => props.width || 20}px;
   height: ${(props) => props.height || 20}px;
+  min-height: ${(props) => props.height || 20}px;
   background: none;
   border: none;
   cursor: pointer;

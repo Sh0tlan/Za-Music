@@ -23,7 +23,7 @@ function Home() {
 
         const [chart, radio] = await Promise.all([
           loadCharts(),
-          await loadTopRadioTracks(),
+          loadTopRadioTracks(),
         ]);
 
         setChart(chart);

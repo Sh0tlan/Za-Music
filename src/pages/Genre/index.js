@@ -8,6 +8,7 @@ import { toast } from "react-toastify";
 import { loadGenre } from "services/api";
 import { SongsCountWrapper, Wrapper } from "./styled";
 import Skeleton from "react-loading-skeleton";
+import { theme } from "styles/Theme";
 
 function Genre() {
   const { genreId } = useParams();
@@ -37,7 +38,7 @@ function Genre() {
       <TextWrapper>
         <MainTitle>{genre?.genre.name || <Skeleton width={100} />}</MainTitle>
         <SongsCountWrapper>
-          <Music />
+          <Music color={theme.colors.secondaryGrey} />
           <SmallText>
             {isLoading ? (
               <Skeleton width={40} />
@@ -46,8 +47,8 @@ function Genre() {
             )}
           </SmallText>
         </SongsCountWrapper>
-        <TracksTable isLoading={isLoading} tracks={genre?.tracks}></TracksTable>
       </TextWrapper>
+      <TracksTable isLoading={isLoading} tracks={genre?.tracks}></TracksTable>
     </Wrapper>
   );
 }
